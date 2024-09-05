@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "date-plans")
+@RequestMapping(path = "/api/date-plans")
 @RequiredArgsConstructor
 public class DatePlanController {
 
