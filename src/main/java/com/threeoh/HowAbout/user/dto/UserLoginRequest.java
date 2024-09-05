@@ -23,4 +23,4 @@ public record UserLoginRequest(
                     .password(password)
                     .build();
         }
-    }
+}
