@@ -42,7 +42,7 @@ public class DatePlan {
     private String image;
 
     @OneToMany(mappedBy = "datePlan", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn(name = "activity_order")
+    @OrderBy("order ASC") // order 필드를 기준으로 오름차순 정렬
     private List<PlanActivity> planActivities = new ArrayList<>();
 
     @Builder
