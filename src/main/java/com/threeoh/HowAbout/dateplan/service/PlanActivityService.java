@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -32,6 +33,9 @@ public class PlanActivityService {
         DateActivity dateActivity = dateActivityRepository.findById(dateActivityId)
                 .orElseThrow(() -> new IllegalArgumentException("DateActivity not found with DateActivity id : " + dateActivityId));
 
+        // 데이터베이스에서 순서 밀어내기 처리
+        planActivityRepository.incrementOrderForActivities(datePlanId, order);
+
         datePlan.addDatePlanActivity(dateActivity, order);
         return DatePlanResponse.from(datePlanRepository.save(datePlan));
     }
@@ -48,10 +52,7 @@ public class PlanActivityService {
         int removedOrder = planActivity.getOrder();
         datePlan.removePlanActivity(planActivity);
 
-        // 순서 조정
-        datePlan.getPlanActivities().stream()
-                .filter(onePlanActivity -> onePlanActivity.getOrder() > removedOrder)
-                .forEach(onePlanActivity -> onePlanActivity.updateOrder(onePlanActivity.getOrder() - 1));
+        planActivityRepository.decrementOrderForActivities(datePlanId, removedOrder);
 
         return DatePlanResponse.from(datePlanRepository.save(datePlan));
     }
@@ -60,6 +61,18 @@ public class PlanActivityService {
     public PlanActivityResponse updateActivityOrder(Long planActivityId, int newOrder) {
         PlanActivity planActivity = planActivityRepository.findById(planActivityId)
                 .orElseThrow(() -> new IllegalArgumentException("PlanActivity not found with PlanActivity id : " + planActivityId));
+        DatePlan datePlan = planActivity.getDatePlan();
+        int currentOrder = planActivity.getOrder();
+        int maxOrder = planActivityRepository.findMaxOrderByDatePlanId(datePlan.getId());
+        if ( newOrder < 1 || newOrder > maxOrder + 1) {
+            throw new IllegalArgumentException("Invalid order value. It must be between 1 and " + (maxOrder + 1));
+        }
+        if (newOrder > currentOrder) {
+            planActivityRepository.decrementOrderForRange(datePlan.getId(), currentOrder + 1, newOrder);
+        } else if (newOrder < currentOrder) {
+            planActivityRepository.incrementOrderForRange(datePlan.getId(), newOrder, currentOrder - 1);
+        }
+
         planActivity.updateOrder(newOrder);
         return PlanActivityResponse.from(planActivityRepository.save(planActivity));
     }
@@ -84,6 +97,21 @@ public class PlanActivityService {
 
         DateActivity dateActivity = dateActivityRepository.findById(planActivityRequest.dateActivityId())
                 .orElseThrow(() -> new IllegalArgumentException("DateActivity not found with DateActivity id : " + planActivityRequest.dateActivityId()));
+
+        DatePlan datePlan = planActivity.getDatePlan();
+        int newOrder = planActivityRequest.order();
+        int currentOrder = planActivity.getOrder();
+        int maxOrder = planActivityRepository.findMaxOrderByDatePlanId(datePlan.getId());
+        if ( newOrder < 1 || newOrder > maxOrder + 1) {
+            throw new IllegalArgumentException("Invalid order value. It must be between 1 and " + (maxOrder + 1));
+        }
+        if (newOrder > currentOrder) {
+            planActivityRepository.decrementOrderForRange(datePlan.getId(), currentOrder + 1, newOrder);
+        } else if (newOrder < currentOrder) {
+            planActivityRepository.incrementOrderForRange(datePlan.getId(), newOrder, currentOrder - 1);
+        }
+
+        planActivity.updateOrder(newOrder);
 
         planActivity.updatePlanActivity(dateActivity, planActivityRequest.order());
 
