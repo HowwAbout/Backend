@@ -24,7 +24,7 @@ public class PlanActivity {
     private DatePlan datePlan;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "activity_id")
     private DateActivity dateActivity;
 
