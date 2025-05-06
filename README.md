@@ -18,8 +18,6 @@
 | ORM       | Spring Data JPA               |
 | 인증/보안     | JWT                           |
 | API 문서화   | Swagger (springdoc-openapi)   |
-| 빌드/관리     | Gradle                        |
-| 기타        | Lombok, JUnit, RESTful API 설계 |
 
 ---
 
