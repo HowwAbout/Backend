@@ -23,11 +23,10 @@ public class DatePlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //추후 개발 시 주석 해제
-//    @NotNull
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "title")
     private String title;
@@ -42,7 +41,7 @@ public class DatePlan {
     private String image;
 
     @OneToMany(mappedBy = "datePlan", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("order ASC") // order 필드를 기준으로 오름차순 정렬
+    @OrderBy("sortOrder ASC") // sortOrder 필드를 기준으로 오름차순 정렬
     private List<PlanActivity> planActivities = new ArrayList<>();
 
     @Builder
@@ -54,8 +53,8 @@ public class DatePlan {
         this.image = image;
     }
 
-    public void addDatePlanActivity(DateActivity dateActivity, int order) {
-        PlanActivity planActivity = new PlanActivity(this, dateActivity, order);
+    public void addDatePlanActivity(DateActivity dateActivity, int sortOrder) {
+        PlanActivity planActivity = PlanActivity.create(this, dateActivity, sortOrder);
         this.planActivities.add(planActivity);
     }
 

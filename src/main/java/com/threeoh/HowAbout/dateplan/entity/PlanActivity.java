@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "plan_activities")
 @Getter
@@ -24,30 +26,34 @@ public class PlanActivity {
     private DatePlan datePlan;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "activity_id")
     private DateActivity dateActivity;
 
-    @Column(name = "activity_order")
-    private int order;
+    @Column(name = "sort_order")
+    private int sortOrder;
 
     @Builder
-    public PlanActivity(DatePlan datePlan, DateActivity dateActivity, int order) {
+    public PlanActivity(DatePlan datePlan, DateActivity dateActivity, int sortOrder) {
         this.datePlan = datePlan;
         this.dateActivity = dateActivity;
-        this.order = order;
+        this.sortOrder = sortOrder;
+    }
+
+    public static PlanActivity create(DatePlan datePlan, DateActivity dateActivity, int sortOrder) {
+        return new PlanActivity(datePlan, dateActivity, sortOrder);
     }
 
     public void updateDatePlan(DatePlan datePlan) {
         this.datePlan = datePlan;
     }
 
-    public void updateOrder(int order) {
-        this.order = order;
+    public void updateSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
-    public void updatePlanActivity(DateActivity dateActivity, int order) {
+    public void updatePlanActivity(DateActivity dateActivity, int sortOrder) {
         this.dateActivity = dateActivity;
-        this.order = order;
+        this.sortOrder = sortOrder;
     }
 }

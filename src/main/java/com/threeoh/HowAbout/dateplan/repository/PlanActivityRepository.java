@@ -30,23 +30,23 @@ public interface PlanActivityRepository extends JpaRepository<PlanActivity, Long
     @Modifying
     @Query("""
             UPDATE PlanActivity pa 
-            SET pa.order = pa.order + 1
+            SET pa.sortOrder = pa.sortOrder + 1
             WHERE pa.datePlan.id = :datePlanId
-            AND pa.order >= :order
+            AND pa.sortOrder >= :sortOrder
             """)
-    void incrementOrderForActivities(@Param("datePlanId") Long datePlanId, @Param("order") int order);
+    void incrementOrderForActivities(@Param("datePlanId") Long datePlanId, @Param("sortOrder") int order);
 
     @Modifying
     @Query("""
             UPDATE PlanActivity pa
-            SET pa.order = pa.order - 1
+            SET pa.sortOrder = pa.sortOrder - 1
             WHERE pa.datePlan.id = :datePlanId
-            AND pa.order > :removedOrder
+            AND pa.sortOrder > :removedOrder
             """)
     void decrementOrderForActivities(@Param("datePlanId") Long datePlanId, @Param("removedOrder") int removedOrder);
 
     @Query("""
-            SELECT MAX(pa.order)
+            SELECT MAX(pa.sortOrder)
             FROM PlanActivity pa
             WHERE pa.datePlan.id = :datePlanId
             """)
@@ -55,18 +55,18 @@ public interface PlanActivityRepository extends JpaRepository<PlanActivity, Long
     @Modifying
     @Query("""
             UPDATE PlanActivity pa
-            SET pa.order = pa.order + 1
+            SET pa.sortOrder = pa.sortOrder + 1
             WHERE pa.datePlan.id = :datePlanId
-            AND pa.order BETWEEN :startOrder AND :endOrder
+            AND pa.sortOrder BETWEEN :startOrder AND :endOrder
             """)
     void incrementOrderForRange(@Param("datePlanId") Long datePlanId, @Param("startOrder") int startOrder, @Param("endOrder") int endOrder);
 
     @Modifying
     @Query("""
             UPDATE PlanActivity pa
-            SET pa.order = pa.order - 1
+            SET pa.sortOrder = pa.sortOrder - 1
             WHERE pa.datePlan.id = :datePlanId
-            AND pa.order BETWEEN :startOrder AND :endOrder
+            AND pa.sortOrder BETWEEN :startOrder AND :endOrder
             """)
     void decrementOrderForRange(@Param("datePlanId") Long datePlanId, @Param("startOrder") int startOrder, @Param("endOrder") int endOrder);
 }

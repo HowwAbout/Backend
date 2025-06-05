@@ -13,10 +13,12 @@ public record PlanActivityRequest(
         Long dateActivityId,
 
         @Schema(description = "데이트 활동 순서", example = "1")
-        int order
+        int sortOrder
 
 ) {
     public PlanActivity toEntity(DatePlan datePlan, DateActivity dateActivity) {
-        return new PlanActivity(datePlan, dateActivity, order);
+        return PlanActivity.create(datePlan, dateActivity, sortOrder);
+
+
     }
 }

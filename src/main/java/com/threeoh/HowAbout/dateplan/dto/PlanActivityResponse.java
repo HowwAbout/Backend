@@ -32,7 +32,7 @@ public record PlanActivityResponse(
                 .planActivityId(planActivity.getId())
                 .datePlanId(datePlanId)
                 .dateActivityResponse(DateActivityResponse.from(planActivity.getDateActivity()))
-                .order(planActivity.getOrder())
+                .order(planActivity.getSortOrder())
                 .build();
     }
 }
