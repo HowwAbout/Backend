@@ -6,7 +6,6 @@ import com.threeoh.HowAbout.dateplan.dto.PlanActivityResponse;
 import com.threeoh.HowAbout.dateplan.dto.PlanActivityResponseList;
 import com.threeoh.HowAbout.dateplan.service.PlanActivityService;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +22,7 @@ public class PlanActivityController {
     @Operation(summary = "Add Plan Activity By DatePlan ID", description = "DatePlan ID를 통해 플랜에 새로운 활동 추가")
     @PostMapping(path = "/{datePlanId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DatePlanResponse> addPlanActivity(@PathVariable Long datePlanId, @RequestBody PlanActivityRequest planActivityRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(planActivityService.addPlanActivity(datePlanId, planActivityRequest.dateActivityId(), planActivityRequest.order()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(planActivityService.addPlanActivity(datePlanId, planActivityRequest.dateActivityId(), planActivityRequest.sortOrder()));
     }
 
     @Operation(summary = "Remove Plan Activity", description = "DatePlan Id와 PlanActivity Id를 통한 특정 플랜에서 특정 활동을 제거")
@@ -33,7 +32,7 @@ public class PlanActivityController {
     }
 
     @Operation(summary = "Update Plan Activity Order", description = "PlanActivity ID를 통해 플랜 내 특정 활동의 순서를 수정")
-    @PutMapping(path = "/{planActivityId}/order", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{planActivityId}/sortOrder", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PlanActivityResponse> updateActivityOrder(@PathVariable Long planActivityId, @RequestParam int newOrder) {
         return ResponseEntity.ok(planActivityService.updateActivityOrder(planActivityId, newOrder));
     }
